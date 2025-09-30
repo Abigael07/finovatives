@@ -15,6 +15,7 @@ import Footer from "../components/Footer";
 import CTASection from "../components/CTASection";
 import AuthPromptModal from "../components/AuthPromptModal"; 
 import aboutImage from "../assets/about.jpg";
+import { CartProvider } from "../context/CartContext";
 
 const Home = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -29,6 +30,7 @@ const Home = () => {
 
   return (
     <>
+     <CartProvider>
       <Navbar />
       <Hero />
       <AboutSection />
@@ -81,6 +83,7 @@ const Home = () => {
       <FloatingWhatsAppButton />
       <CTASection />
       <Footer />
+    </CartProvider>
 
       {/* ✅ Auth Prompt Modal */}
       {showAuthModal && <AuthPromptModal onClose={() => setShowAuthModal(false)} />}

@@ -111,7 +111,11 @@ const ProfilePage = () => {
       <div style={styles.container}>
         <div style={styles.header}>
           {editedUser.profilePic ? (
-            <img src={editedUser.profilePic} alt="Profile" style={styles.profileImage} />
+            <img
+              src={`http://localhost:5000/${editedUser.profilePic}`}
+              alt="Profile"
+              style={styles.profileImage}
+            />
           ) : (
             <div style={{
               ...styles.profileImage,
@@ -153,12 +157,9 @@ const ProfilePage = () => {
             {editedUser.courses && editedUser.courses.length > 0 ? (
               editedUser.courses.map((course, i) => (
                 <li key={i} style={{ marginBottom: '10px' }}>
-                  <strong>
-                    {typeof course === 'string'
-                      ? course
-                      : course.title || 'Untitled Course'}
-                  </strong>
-                  {course.pdfUrl && (
+                  <strong>{typeof course === 'string' ? course : course.title || 'Untitled Course'}</strong>
+
+                  {course.pdfUrl && typeof course.pdfUrl === "string" && (
                     <a
                       href={`http://localhost:5000${course.pdfUrl}`}
                       target="_blank"
@@ -168,9 +169,10 @@ const ProfilePage = () => {
                       📄 View PDF
                     </a>
                   )}
-                  {course.link && (
+
+                  {course.link && typeof course.link === "string" && (
                     <a
-                      href={course.link}
+                      href={course.link.startsWith("http") ? course.link : `http://${course.link}`}
                       target="_blank"
                       rel="noreferrer"
                       style={{ marginLeft: 10, color: '#1e88e5' }}
@@ -207,7 +209,7 @@ const ProfilePage = () => {
           <input
             type="text"
             name="profilePic"
-            value={editedUser.profilePic}
+            value={editedUser.profilePic ? `http://localhost:5000/${editedUser.profilePic}` : ""}
             onChange={handleChange}
             placeholder="Profile Picture URL"
             style={styles.input}

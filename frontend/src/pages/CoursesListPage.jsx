@@ -39,7 +39,11 @@ const CoursesListPage = () => {
                 <h3 style={styles.title}>{course.title || 'Untitled Course'}</h3>
                 <p><strong>Description:</strong> {course.description || 'No description provided.'}</p>
                 <p><strong>Category:</strong> {course.category || 'N/A'}</p>
-                <p><strong>Instructor:</strong> {course.instructor?.name || 'Unknown'}</p>
+                <p>
+                  <strong>Instructor:</strong>{" "}
+                  {course.instructorId?.name || course.instructorName || "Unknown"}
+                </p>
+
                 <p><strong>Content:</strong> {course.content || 'Not provided.'}</p>
 
                 {course.link && (
