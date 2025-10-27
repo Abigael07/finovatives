@@ -1,0 +1,99 @@
+/* Global body themes */
+body.light-theme {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+body.dark-theme {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+/* Main App container uses body theme */
+.App {
+  text-align: center;
+  background-color: inherit;
+  color: inherit;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Hero Section */
+body.light-theme .hero-section {
+  background: linear-gradient(120deg, #007BFF, #00C851);
+  color: white;
+}
+
+body.dark-theme .hero-section {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+}
+
+.hero-section {
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo */
+.logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+/* Auth Buttons */
+.auth-buttons {
+  margin-top: 30px;
+}
+
+.login-btn,
+.register-btn {
+  margin: 0 10px;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.login-btn {
+  background-color: #0056b3;
+}
+
+.login-btn:hover {
+  background-color: #004299;
+}
+
+.register-btn {
+  background-color: #007E33;
+}
+
+.register-btn:hover {
+  background-color: #005f24;
+}
+
+/* Optional: Dark theme override for buttons (optional, only if you want different colors) */
+body.dark-theme .login-btn {
+  background-color: #0d47a1;
+}
+
+body.dark-theme .login-btn:hover {
+  background-color: #0a357a;
+}
+
+body.dark-theme .register-btn {
+  background-color: #1b5e20;
+}
+
+body.dark-theme .register-btn:hover {
+  background-color: #144d18;
+}
