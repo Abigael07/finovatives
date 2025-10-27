@@ -12,7 +12,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
-import ThankYou from "./pages/Thankyou";
+import ThankYou from "./pages/ThankYou";
 import ServiceDetails from "./pages/ServiceDetails"; 
 import AllServicesPage from "./pages/AllServicesPage";
 import BookKeeping from "./pages/BookKeeping";
