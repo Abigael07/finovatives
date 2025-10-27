@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import HeroSection from "../components/herosection";
-import HeroSearch from "../components/herosearch";
-import CategoryStrip from "../components/categorystrip";
-import AboutSection from "../components/aboutsection";
+import HeroSection from "../components/HeroSection";
+import HeroSearch from "../components/HeroSearch";
+import CategoryStrip from "../components/CategoryStrip";
+import AboutSection from "../components/AboutSection";
 import PartnerSection from "../components/partnersection";
 
 const slugify = (text) =>

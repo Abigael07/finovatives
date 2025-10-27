@@ -1,5 +1,5 @@
 import React from "react";
-import TeamCard from "../components/teamcard";
+import TeamCard from "../components/TeamCard";
 
 const team = [
   { name: "Abigael Ndinda", role: "Founder & CEO", image: "https://images.unsplash.com/photo-1595152772835-219674b2a8a4?auto=format&fit=crop&w=400&q=80" },
