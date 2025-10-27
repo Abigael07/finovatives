@@ -1,81 +1,66 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { verifyToken } = require('../middleware/authMiddleware'); // ✅ destructure the middleware
-const Message = require('../models/Message');
-const User = require('../models/User');
+import axios from "axios";
+import nodemailer from "nodemailer";
+import Message from "../models/message.js";
 
-// Send a message
-router.post('/', verifyToken, async (req, res) => {
-  const { content } = req.body;
-  try {
-    const instructor = await User.findOne({ role: 'instructor' });
-    if (!instructor) return res.status(404).json({ error: 'Instructor not found' });
-
-    const message = new Message({
-      sender: req.user._id,
-      receiver: instructor._id,
-      content,
-    });
-
-    await message.save();
-    res.status(201).json(message);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to send message' });
-  }
+// --- Configure your email transport (Gmail SMTP with App Password) ---
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "abigaelndinda7@gmail.com", // your Gmail address
+    pass: "YOUR_APP_PASSWORD_HERE",   // App Password (not Gmail login password)
+  },
 });
 
-// View inbox messages
-router.get('/inbox', verifyToken, async (req, res) => {
+// --- POST route for contact form ---
+router.post("/", async (req, res) => {
   try {
-    const userId = req.user._id;
+    const { name, email, phone, message, token } = req.body;
 
-    const messages = await Message.find({
-      $or: [{ sender: userId }, { receiver: userId }]
-    })
-      .sort({ timestamp: -1 })
-      .populate('sender receiver', 'name');
-
-    const conversationMap = new Map();
-
-    for (const msg of messages) {
-      const otherUser = msg.sender._id.toString() === userId.toString()
-        ? msg.receiver
-        : msg.sender;
-
-      if (!conversationMap.has(otherUser._id.toString())) {
-        conversationMap.set(otherUser._id.toString(), {
-          user: otherUser,
-          lastMessage: msg.content,
-          timestamp: msg.timestamp
-        });
-      }
+    // Validate fields
+    if (!name || !email || !message) {
+      return res.status(400).json({ ok: false, message: "All fields are required." });
     }
 
-    const conversations = Array.from(conversationMap.values()).sort(
-      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-    );
+    // --- Verify reCAPTCHA ---
+    const secretKey = "6Ldg6PQrAAAAABumfMpjKnfdsR3ZAzGjI3gdsOU-"; // 🔒 from Google reCAPTCHA
+    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+    const googleRes = await axios.post(verifyUrl);
 
-    res.json(conversations);
+    if (!googleRes.data.success) {
+      return res.status(400).json({ ok: false, message: "reCAPTCHA verification failed." });
+    }
+
+    // --- Save message to MongoDB ---
+    const newMessage = new Message({ name, email, phone, message });
+    await newMessage.save();
+
+    // --- Send notification email to admin ---
+    await transporter.sendMail({
+      from: `"Finovative Contact" <${email}>`,
+      to: "abigaelndinda7@gmail.com", // ✅ use your actual admin email address
+      subject: `📩 New Contact Message from ${name}`,
+      html: `
+        <h3>New Inquiry Received</h3>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Phone:</b> ${phone || "N/A"}</p>
+        <p><b>Message:</b></p>
+        <p>${message}</p>
+        <hr/>
+        <small>Sent from Finovative Insights contact form</small>
+      `,
+    });
+
+    // --- Respond to frontend ---
+    res.status(200).json({ ok: true, message: "Message sent successfully!" });
+
   } catch (err) {
-    console.error("Inbox fetch error:", err);
-    res.status(500).json({ error: 'Failed to fetch inbox' });
+    console.error("❌ Message route error:", err.message);
+    res.status(500).json({ ok: false, message: "Server error. Please try again later." });
   }
 });
 
-// GET messages between current user and another user
-router.get('/:userId', verifyToken, async (req, res) => {
-  try {
-    const messages = await Message.find({
-      $or: [
-        { sender: req.user._id, receiver: req.params.userId },
-        { sender: req.params.userId, receiver: req.user._id }
-      ]
-    }).sort({ timestamp: 1 });
+export default router;
 
-    res.json(messages);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch messages' });
-  }
-});
-
-module.exports = router;

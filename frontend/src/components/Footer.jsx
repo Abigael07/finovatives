@@ -1,64 +1,33 @@
-import { Mail, Phone, Facebook, Instagram, Twitter } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from "react";
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <footer style={{ backgroundColor: '#047857', color: 'white', padding: '48px 24px' }}>
-      <div style={{ maxWidth: '1140px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '40px' }}>
-        {/* Logo & Description */}
-        <div>
-          <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '12px' }}>FINOVATIVE INSIGHTS</h3>
-          <p style={{ fontSize: '14px', color: '#d1d5db' }}>
-            Empowering financial literacy through expert instruction, real-world case studies, and meaningful conversations.
-          </p>
+    <footer style={{ background: "#004D40", color: "#E0F2F1", padding: "30px 0", marginTop: 40 }}>
+      <div className="container" style={{ display: "flex", flexWrap: "wrap", gap: 20, justifyContent: "space-between" }}>
+        <div style={{ minWidth: 220 }}>
+          <h3 style={{ color: "#A7FFEB" }}>Finovative Insights</h3>
+          <p style={{ marginTop: 8 }}> • Web Development  • Bookkeeping • Design </p>
         </div>
 
-        {/* Quick Links */}
-        <div>
-          <h4 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '12px' }}>Quick Links</h4>
-          <ul style={{ fontSize: '14px', listStyle: 'none', padding: 0 }}>
-            <li><Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link></li>
-            <li><Link to="/courses" style={{ color: 'white', textDecoration: 'none' }}>Courses</Link></li>
-            <li><Link to="/messages" style={{ color: 'white', textDecoration: 'none' }}>Financial Talk</Link></li>
-            <li><Link to="/about" style={{ color: 'white', textDecoration: 'none' }}>About</Link></li>
-          </ul>
-        </div>
-
-        {/* Contact Info */}
-        <div>
-          <h4 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '12px' }}>Contact</h4>
-          <ul style={{ fontSize: '14px', listStyle: 'none', padding: 0 }}>
-            <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Phone size={16} />
-              <a href="https://wa.me/254708022727" target="_blank" rel="noopener noreferrer" style={{ color: 'white', textDecoration: 'none' }}>
-                WhatsApp: +254 7XX XXX XXX
-              </a>
-            </li>
-            <li style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
-              <Mail size={16} />
-              <a href="mailto:support@finovative.com" style={{ color: 'white', textDecoration: 'none' }}>
-                support@finovative.com
-              </a>
-            </li>
-          </ul>
-          <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-              <Facebook color="white" size={20} />
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <Instagram color="white" size={20} />
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-              <Twitter color="white" size={20} />
-            </a>
+        <div style={{ minWidth: 220 }}>
+          <h4 style={{ color: "#A7FFEB" }}>Quick Links</h4>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
+            <a href="/" style={{ color: "#E0F2F1", textDecoration: "none" }}>Home</a>
+            <a href="/services" style={{ color: "#E0F2F1", textDecoration: "none" }}>Services</a>
+            <a href="/about" style={{ color: "#E0F2F1", textDecoration: "none" }}>About</a>
+            <a href="/contact" style={{ color: "#E0F2F1", textDecoration: "none" }}>Contact</a>
           </div>
         </div>
+
+        <div style={{ minWidth: 220 }}>
+          <h4 style={{ color: "#A7FFEB" }}>Contact</h4>
+          <p style={{ marginTop: 8 }}>Nairobi, Kenya</p>
+          <p style={{ marginTop: 6 }}>info@finovative.com</p>
+          <p style={{ marginTop: 6 }}>+254 704 955 384</p>
+        </div>
       </div>
-      <div style={{ marginTop: '32px', textAlign: 'center', fontSize: '14px', color: '#d1d5db' }}>
-        &copy; {new Date().getFullYear()} FINOVATIVE INSIGHTS. All rights reserved.
-      </div>
+
+      <div style={{ textAlign: "center", marginTop: 20, fontSize: 13 }}>© {new Date().getFullYear()} Finovative Insights. All rights reserved.</div>
     </footer>
   );
-};
-
-export default Footer;
+}

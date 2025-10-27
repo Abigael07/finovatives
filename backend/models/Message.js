@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
+// backend/models/Message.js
+const mongoose = require("mongoose");
 
-const messageSchema = new mongoose.Schema({
-  sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  content: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now },
+const MessageSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String },
+  message: { type: String, required: true },
+  sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "Seller", default: null },
+  createdAt: { type: Date, default: Date.now },
 });
 
-
-module.exports = mongoose.model('Message', messageSchema);
+module.exports = mongoose.model("Message", MessageSchema);

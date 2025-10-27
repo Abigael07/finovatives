@@ -1,23 +1,17 @@
 import React from "react";
 
-const AboutSection = () => {
+export default function AboutSection({ title = "About us", text, image }) {
   return (
-    <section
-      style={{
-        backgroundColor: "#EFF6FF",
-        padding: "60px 20px",
-        textAlign: "center",
-      }}
-    >
-      <h2 style={{ color: "#1D4ED8", fontSize: "2rem", marginBottom: "20px" }}>
-        About FINOVATIVE INSIGHTS
-      </h2>
-      <p style={{ color: "#1E3A8A", fontSize: "1.1rem", maxWidth: "700px", margin: "0 auto" }}>
-        At FINOVATIVE INSIGHTS, our mission is to bridge the gap between financial knowledge and everyday decisions.
-        We offer impactful courses and expert mentorship to help you achieve financial clarity.
-      </p>
+    <section style={{ padding: "56px 0" }}>
+      <div className="container" style={{ display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 350px" }}>
+          <h2 style={{ color: "#00796B", marginBottom: 12 }}>{title}</h2>
+          <p style={{ color: "#444", lineHeight: 1.6 }}>{text}</p>
+        </div>
+        <div style={{ flex: "1 1 350px" }}>
+          <img src={image || "https://images.unsplash.com/photo-1518600506278-4e8ef466b810?auto=format&fit=crop&w=900&q=80"} alt="about" style={{ width: "100%", borderRadius: 12 }} />
+        </div>
+      </div>
     </section>
   );
-};
-
-export default AboutSection;
+}

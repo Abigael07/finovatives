@@ -1,168 +1,110 @@
-// routes/auth.js
-const express = require("express");
-const router = express.Router();
-const auth = require("../middleware/auth");
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const multer = require("multer");
-const path = require("path");
+import express from "express";
+import auth from "../middleware/auth.js";
+import User from "../models/User.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 
-// ---------------- MULTER CONFIG ----------------
+const router = express.Router();
+
+// Get current file path for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Configure multer for profile pictures
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Ensure "uploads" folder exists in backend root
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, "../uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-const upload = multer({ storage });
-// ------------------------------------------------
 
-// ---------------- REGISTER ----------------
+const upload = multer({ storage });
+
+// Register route
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: "Please fill all fields" });
-    }
-
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: "Email already in use" });
-    }
+    if (existingUser) return res.status(400).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
+    const user = new User({
       name,
       email,
       password: hashedPassword,
       role: role || "student",
     });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
-    });
-
-    res.status(201).json({ token, user });
+    await user.save();
+    res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    console.error("Register error:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-// ---------------- LOGIN ----------------
+// Login route
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ error: "Invalid credentials" });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    res.json({ token, user });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "defaultsecret", { expiresIn: "1d" });
+    res.json({ token });
   } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-// ---------------- GET CURRENT USER ----------------
+// View profile (protected)
 router.get("/me", auth, async (req, res) => {
-  res.json({ user: req.user });
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
 });
 
-// ---------------- UPLOAD PROFILE PICTURE ----------------
-router.post(
-  "/upload-profile-pic",
-  auth,
-  upload.single("profilePic"),
-  async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded" });
-      }
-
-      const user = await User.findById(req.user.id);
-      user.profilePic = `/uploads/${req.file.filename}`;
-      await user.save();
-
-      res.json({ success: true, profilePic: user.profilePic });
-    } catch (err) {
-      console.error("Upload error:", err);
-      res.status(500).json({ error: "Upload failed" });
-    }
-  }
-);
-
-// ---------------- UPDATE PROFILE ----------------
+// Update profile
 router.put("/update-profile", auth, async (req, res) => {
   try {
     const { name, email } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user._id,
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
       { name, email },
       { new: true }
     ).select("-password");
-
-    res.json({ message: "Profile updated", user: updatedUser });
+    res.json({ message: "Profile updated successfully", user });
   } catch (err) {
-    console.error("Update profile error:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-// ---------------- CHANGE PASSWORD ----------------
-router.put("/change-password", auth, async (req, res) => {
+// Upload profile picture
+router.post("/upload-profile-pic", auth, upload.single("profilePic"), async (req, res) => {
   try {
-    const { oldPassword, newPassword } = req.body;
-
-    const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: "Old password is incorrect" });
-    }
-
-    user.password = await bcrypt.hash(newPassword, 10);
+    const user = await User.findById(req.user.id);
+    user.profilePic = `/uploads/${req.file.filename}`;
     await user.save();
-
-    res.json({ message: "Password updated successfully" });
+    res.json({ message: "Profile picture uploaded successfully", user });
   } catch (err) {
-    console.error("Change password error:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-// Get current user profile with full course data
-router.get("/me", auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id)
-      .select("-password")
-      .populate("enrolledCourses")
-      .populate("uploadedCourses");
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json({ user });
-  } catch (err) {
-    console.error("Fetch profile error:", err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-
-module.exports = router;
+export default router;
