@@ -1,12 +1,12 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/navbar";
-import Footer from "./components/footer";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
-import Home from "./pages/home";
-import Services from "./pages/services";
-import Team from "./pages/team";
+import Home from "./pages/Home";
+import Services from "./pages/Services";
+import Team from "./pages/Team";
 import PartnerSectionPage from "./pages/partnersection";
 import About from "./pages/about";
 import Contact from "./pages/contact";
