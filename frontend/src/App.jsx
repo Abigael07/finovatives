@@ -18,6 +18,7 @@ import AllServicesPage from "./pages/AllServicesPage";
 import BookKeeping from "./pages/BookKeeping";
 import Accounting from "./pages/Accounting";
 import WebDevelopment from "./pages/WebDevelopment";
+import DataAnalytics from "./pages/DataAnalytics";
 
 
 export default function App() {
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/services/book-keeping" element={<BookKeeping />} />
           <Route path="/services/accounting" element={<Accounting />} />
           <Route path="/services/web-development" element={<WebDevelopment />} />
+          <Route path="/services/data-analytics" element={<DataAnalytics />} />
 
           
         </Routes>

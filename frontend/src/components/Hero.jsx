@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Hero() {
-  const image =
-    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80";
+  const img="hero-poster.jpg"
+    
 
   return (
     <section
@@ -46,7 +46,7 @@ export default function Hero() {
           <Link
             to="/contact"
             style={{
-              border: "2px solid white",
+              border: "2px solid green",
               color: "white",
               padding: "10px 16px",
               borderRadius: 8,

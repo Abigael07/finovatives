@@ -1,18 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const services = [
-    { name: "Book Keeping", slug: "book-keeping" },
-    { name: "Accounting", slug: "accounting" },
-    { name: "Web Development", slug: "web-development" },
-  ];
 
   useEffect(() => {
     function onScroll() {
@@ -20,16 +13,6 @@ export default function Navbar() {
     }
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setServicesOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const navStyle = {
@@ -62,39 +45,12 @@ export default function Navbar() {
     cursor: "pointer",
   };
 
-  const linkStyle = {
-    color: "white",
+  const linkStyle = (path) => ({
+    color: location.pathname === path ? "#B2DFDB" : "white",
     textDecoration: "none",
     fontWeight: 600,
     cursor: "pointer",
-  };
-
-  const dropdownStyle = {
-    position: "absolute",
-    top: "45px",
-    left: 0,
-    background: "rgba(0,77,64,0.95)",
-    borderRadius: "10px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
-    padding: "10px 0",
-    opacity: servicesOpen ? 1 : 0,
-    transform: servicesOpen ? "translateY(0)" : "translateY(10px)",
-    transition: "all 0.25s ease",
-    pointerEvents: servicesOpen ? "auto" : "none",
-    width: "200px",
-  };
-
-  const dropdownItemStyle = {
-    display: "block",
-    padding: "10px 20px",
-    color: "#E0F2F1",
-    fontWeight: 500,
-    background: "transparent",
-    border: "none",
-    textAlign: "left",
-    width: "100%",
-    cursor: "pointer",
-  };
+  });
 
   const mobileToggle = {
     fontSize: "24px",
@@ -102,12 +58,6 @@ export default function Navbar() {
     background: "transparent",
     border: "none",
     cursor: "pointer",
-  };
-
-  const goToService = (slug) => {
-    navigate(`/services/${slug}`);
-    setServicesOpen(false);
-    setMobileOpen(false);
   };
 
   return (
@@ -119,62 +69,27 @@ export default function Navbar() {
 
         {/* Desktop menu */}
         <nav className="desktop-nav" style={{ display: "flex", gap: 25 }}>
-          <Link to="/" style={linkStyle}>
-            Home
+          <Link to="/services/book-keeping" style={linkStyle("/services/book-keeping")}>
+            Book Keeping
           </Link>
-
-          <div style={{ position: "relative" }} ref={dropdownRef}>
-            <button
-              onClick={() => setServicesOpen(!servicesOpen)}
-              style={{
-                ...linkStyle,
-                background: "transparent",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              Services
-              <span
-                style={{
-                  marginLeft: 6,
-                  transition: "transform 0.3s ease",
-                  transform: servicesOpen ? "rotate(180deg)" : "rotate(0)",
-                }}
-              >
-                ▾
-              </span>
-            </button>
-
-            <div style={dropdownStyle}>
-              {services.map((s) => (
-                <button
-                  key={s.slug}
-                  onClick={() => goToService(s.slug)}
-                  style={dropdownItemStyle}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background =
-                      "rgba(255,255,255,0.08)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "transparent")
-                  }
-                >
-                  {s.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <Link to="/about" style={linkStyle}>
+          <Link to="/services/accounting" style={linkStyle("/services/accounting")}>
+            Accounting
+          </Link>
+          <Link to="/services/web-development" style={linkStyle("/services/web-development")}>
+            Web Development
+          </Link>
+          <Link to="/services/data-analytics" style={linkStyle("/services/data-analytics")}>
+            Data Analytics
+          </Link>
+          <Link to="/about" style={linkStyle("/about")}>
             About
           </Link>
-
-          <Link to="/contact" style={linkStyle}>
+          <Link to="/contact" style={linkStyle("/contact")}>
             Contact
           </Link>
         </nav>
 
+        {/* Mobile menu toggle */}
         <button
           style={mobileToggle}
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -185,67 +100,28 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div
-          style={{
-            background: "rgba(0,77,64,0.97)",
-            padding: "20px",
-          }}
-        >
-          <Link
-            to="/"
-            style={{ ...linkStyle, display: "block", margin: "10px 0" }}
-            onClick={() => setMobileOpen(false)}
-          >
-            Home
-          </Link>
-
-          <button
-            onClick={() => setServicesOpen(!servicesOpen)}
-            style={{
-              ...linkStyle,
-              background: "transparent",
-              border: "none",
-              width: "100%",
-              textAlign: "left",
-              margin: "10px 0",
-            }}
-          >
-            Services ▾
-          </button>
-
-          {servicesOpen && (
-            <div style={{ paddingLeft: 10 }}>
-              {services.map((s) => (
-                <button
-                  key={s.slug}
-                  onClick={() => goToService(s.slug)}
-                  style={{
-                    ...dropdownItemStyle,
-                    paddingLeft: 15,
-                    background: "transparent",
-                  }}
-                >
-                  {s.name}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <Link
-            to="/about"
-            style={{ ...linkStyle, display: "block", margin: "10px 0" }}
-            onClick={() => setMobileOpen(false)}
-          >
-            About
-          </Link>
-
-          <Link
-            to="/contact"
-            style={{ ...linkStyle, display: "block", margin: "10px 0" }}
-            onClick={() => setMobileOpen(false)}
-          >
-            Contact
-          </Link>
+        <div style={{ background: "rgba(0,77,64,0.97)", padding: "20px" }}>
+          {[
+            { name: "Book Keeping", path: "/services/book-keeping" },
+            { name: "Accounting", path: "/services/accounting" },
+            { name: "Web Development", path: "/services/web-development" },
+            { name: "Data Analytics", path: "/services/data-analytics" },
+            { name: "About", path: "/about" },
+            { name: "Contact", path: "/contact" },
+          ].map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              style={{
+                ...linkStyle(item.path),
+                display: "block",
+                margin: "10px 0",
+              }}
+              onClick={() => setMobileOpen(false)}
+            >
+              {item.name}
+            </Link>
+          ))}
         </div>
       )}
 

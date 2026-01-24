@@ -4,7 +4,8 @@ export default function About() {
   return (
     <div
       style={{
-        fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial",
+        fontFamily:
+          "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial",
         backgroundColor: "#f7fdfa",
         color: "#003d36",
       }}
@@ -76,7 +77,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Mission and Values */}
+      {/* Mission & Values */}
       <section
         style={{
           backgroundColor: "#e6faf6",
@@ -97,8 +98,7 @@ export default function About() {
           }}
         >
           To empower individuals and businesses through financial intelligence,
-          innovative design, and digital solutions that drive sustainable
-          growth.
+          innovative design, and digital solutions that drive sustainable growth.
         </p>
 
         <div
@@ -178,19 +178,19 @@ export default function About() {
         >
           {[
             {
-              name: "Abigael Ndinda",
+              name: "Jacob Ndonye",
               role: "Founder & CEO",
-              img: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=800&q=80",
+              img: "Jacob.jpg", // place Abby.jpg inside public or src/assets
             },
             {
               name: "John Mwangi",
               role: "Lead Developer",
-              img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80",
+              img: "Jacob.jpg",
             },
             {
               name: "Grace Wambui",
               role: "Marketing Director",
-              img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80",
+              img: "Abby.jpg",
             },
           ].map((t) => (
             <div
@@ -200,12 +200,17 @@ export default function About() {
                 borderRadius: "14px",
                 overflow: "hidden",
                 boxShadow: "0 10px 30px rgba(1,73,66,0.06)",
+                textAlign: "center",
               }}
             >
               <img
                 src={t.img}
                 alt={t.name}
-                style={{ width: "100%", height: "260px", objectFit: "cover" }}
+                style={{
+                  width: "100%",
+                  height: "260px",
+                  objectFit: "cover",
+                }}
               />
               <div style={{ padding: "20px" }}>
                 <h3 style={{ margin: 0, color: "#003d36" }}>{t.name}</h3>

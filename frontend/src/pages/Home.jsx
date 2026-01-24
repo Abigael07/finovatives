@@ -43,6 +43,15 @@ export default function Home() {
       image:
         "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
     },
+    {
+      title: "DataAnalytics",
+      slug: "performance-marketing",
+      description:
+        "Turn your data into smart business decisions. ", 
+        
+      image:
+        "https://images.unsplash.com/photo-1581090700227-1e37b190418e?auto=format&fit=crop&w=1600&q=80",
+    },
     
   ];
 
